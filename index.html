@@ -1,45 +1,283 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>晨临的个人门户</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lunar-calendar-js@1.0.9/dist/lunar-calendar.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人导航页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: white;
+        }
+
+        /* 日期时间样式 */
+        .datetime {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .date {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+
+        .time {
+            font-size: 48px;
+            font-weight: 700;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 30px 0;
+        }
+
+        .baidu-search {
+            display: flex;
+            background: white;
+            border-radius: 30px;
+            padding: 8px 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            padding: 8px 10px;
+        }
+
+        .search-btn {
+            background: #4e6ef2;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #3a56d4;
+        }
+
+        /* 网站导航样式 */
+        .nav-container {
+            width: 100%;
+            max-width: 1000px;
+            margin-top: 40px;
+        }
+
+        .nav-category {
+            margin-bottom: 30px;
+        }
+
+        .category-title {
+            font-size: 22px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .site-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 20px;
+        }
+
+        .site-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            transition: transform 0.3s, background 0.3s;
+            cursor: pointer;
+        }
+
+        .site-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.2);
+        }
+
+        .site-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .site-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .site-name {
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .time {
+                font-size: 36px;
+            }
+            .site-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            .site-logo {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <!-- 搜索栏 -->
-    <section class="search-section">
-      <form id="search-form" action="https://www.baidu.com/s" target="_blank">
-        <input type="text" name="wd" placeholder="百度一下..." autocomplete="off">
-        <button type="submit">搜索</button>
-      </form>
-    </section>
+    <!-- 日期时间展示区 -->
+    <div class="datetime">
+        <div class="date" id="date"></div>
+        <div class="time" id="time"></div>
+    </div>
 
-    <!-- 日期与天气 -->
-    <section class="info-panel">
-      <div class="date-card">
-        <h2 id="current-date">--年--月--日 星期-</h2>
-        <p id="lunar-date">农历----</p>
-      </div>
-      <div class="weather-card">
-        <h3 id="weather-city">--</h3>
-        <p id="weather-temp">--°C</p>
-        <p id="weather-desc">--</p>
-      </div>
-    </section>
+    <!-- 百度搜索框 -->
+    <div class="search-container">
+        <form action="https://www.baidu.com/s" method="get" class="baidu-search" target="_blank">
+            <input type="text" name="wd" class="search-input" placeholder="请输入搜索内容...">
+            <button type="submit" class="search-btn">百度一下</button>
+        </form>
+    </div>
 
-    <!-- 常用链接 -->
-    <section class="links-section">
-      <h3>我的收藏</h3>
-      <div class="links-grid">
-        <a href="https://github.com" target="_blank" class="link-item">GitHub</a>
-        <a href="https://zhihu.com" target="_blank" class="link-item">知乎</a>
-        <a href="https://bilibili.com" target="_blank" class="link-item">Bilibili</a>
-        <a href="https://juejin.cn" target="_blank" class="link-item">掘金</a>
-        <a href="https://chatgpt.com" target="_blank" class="link-item">ChatGPT</a>
-        <a href="https://figma.com" target="_blank" class="link-item">Figma</a>
-      </div>
-    </section>
+    <!-- 网站导航区 -->
+    <div class="nav-container">
+        <!-- 工作分类 -->
+        <div class="nav-category">
+            <h2 class="category-title">工作</h2>
+            <div class="site-grid">
+                <a href="https://mail.qq.com" target="_blank" class="site-card">
+                    <div class="site-logo">
+                        <img src="https://mail.qq.com/zh_CN/htmledition/images/function/logo/qqmail_logo_default.png" alt="QQ邮箱">
+                    </div>
+                    <div class="site-name">QQ邮箱</div>
+                </a>
+                <a href="https://www.processon.com" target="_blank" class="site-card">
+                    <div class="site-logo">
+                        <img src="https://cdn.processon.com/static/img/logo/processon_favicon.ico" alt="ProcessOn">
+                    </div>
+                    <div class="site-name">ProcessOn</div>
+                </a>
+                <a href="https://www.notion.so" target="_blank" class="site-card">
+                    <div class="site-logo">
+                        <img src="https://www.notion.so/favicon.ico" alt="Notion">
+                    </div>
+                    <div class="site-name">Notion</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 学习分类 -->
+        <div class="nav-category">
+            <h2 class="category-title">学习</h2>
+            <div class="site-grid">
+                <a href="https://www.bilibili.com" target="_blank" class="site-card">
+                    <div class="site-logo">
+                        <img src="https://www.bilibili.com/favicon.ico" alt="哔哩哔哩">
+                    </div>
+                    <div class="site-name">哔哩哔哩</div>
+                </a>
+                <a href="https://leetcode.cn" target="_blank" class="site-card">
+                    <div class="site-logo">
+                        <img src="https://leetcode.cn/favicon.ico" alt="力扣">
+                    </div>
+                    <div class="site-name">力扣</div>
+                </a>
+                <a href="https://docs.python.org" target="_blank" class="site-card">
+                    <div class="site-logo">
+                        <img src="https://docs.python.org/favicon.ico" alt="Python文档">
+                    </div>
+                    <div class="site-name">Python文档</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 娱乐分类 -->
+        <div class="nav-category">
+            <h2 class="category-title">娱乐</h2>
+            <div class="site-grid">
+                <a href="https://www.netflix.com" target="_blank" class="site-card">
+                    <div class="site-logo">
+                        <img src="https://www.netflix.com/favicon.ico" alt="Netflix">
+                    </div>
+                    <div class="site-name">Netflix</div>
+                </a>
+                <a href="https://music.163.com" target="_blank" class="site-card">
+                    <div class="site-logo">
+                        <img src="https://music.163.com/favicon.ico" alt="网易云音乐">
+                    </div>
+                    <div class="site-name">网易云音乐</div>
+                </a>
+                <a href="https://www.steam.com" target="_blank" class="site-card">
+                    <div class="site-logo">
+                        <img src="https://www.steam.com/favicon.ico" alt="Steam">
+                    </div>
+                    <div class="site-name">Steam</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 更新日期和时间
+        function updateDateTime() {
+            const now = new Date();
+            
+            // 格式化日期
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekDay = weekDays[now.getDay()];
+            document.getElementById('date').textContent = `${year}年${month}月${day}日 ${weekDay}`;
+            
+            // 格式化时间
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        // 初始化并每秒更新时间
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        // 可选：添加搜索框回车提交功能
+        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.querySelector('.search-btn').click();
+            }
+        });
+    </script>
+</body>
+</html>
