@@ -1,229 +1,262 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+<!-- 声明文档类型为HTML，语言为中文 -->
 <head>
     <meta charset="UTF-8">
+    <!-- 设置字符编码为UTF-8，避免中文乱码 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的个人导航主页</title>
-    <!-- 引入 Sortable.js 库来实现拖拽排序 -->
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <!-- 适配移动端，设置视口宽度为设备宽度，初始缩放比例1 -->
+    <title>我的浏览器首页</title>
+    <!-- 网页标题，显示在浏览器标签栏 -->
     <style>
-        /* 1. 全局样式设置 */
-        body {
-            background-color: #C7EDCC; /* 设置护眼豆沙绿背景 */
-            font-family: 'Microsoft YaHei', sans-serif; /* 设置字体 */
+        /* 全局样式重置，清除默认边距和内边距，统一盒模型 */
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+            /* 统一字体，提升美观度 */
+        }
+
+        /* 页面主体样式 - 护眼色背景 */
+        body {
+            background-color: #e6f7f0;
+            /* 柔和的绿色系护眼色，长时间看不易疲劳 */
             padding: 20px;
+            /* 页面内边距，避免内容贴边 */
         }
 
-        /* 2. 时钟区域样式 */
-        #clock {
-            font-size: 24px;
-            font-weight: bold;
+        /* 时间日期显示区域样式 */
+        .time-date {
             text-align: center;
-            margin-bottom: 20px;
+            /* 文字居中 */
+            font-size: 20px;
+            /* 字体大小 */
             color: #333;
-        }
-
-        /* 3. 搜索栏区域样式 */
-        .search-container {
-            text-align: center;
+            /* 文字颜色 */
             margin-bottom: 30px;
-        }
-        #searchInput {
-            width: 400px;
-            height: 40px;
-            padding: 0 10px;
-            border: 1px solid #ccc;
-            outline: none;
-            font-size: 16px;
-        }
-        #searchForm button {
-            width: 100px;
-            height: 42px;
-            background: #317ef3;
-            border: 1px solid #317ef3;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        #searchHistory {
-            margin-top: 10px;
-        }
-        .history-item {
-            display: inline-block;
-            background: #f1f1f1;
-            padding: 2px 8px;
-            margin: 5px;
-            border-radius: 3px;
-        }
-        .delete-btn {
-            margin-left: 5px;
-            cursor: pointer;
-            border: none;
-            background: transparent;
+            /* 与下方搜索框的间距 */
+            padding: 10px 0;
+            /* 上下内边距，增加点击区域 */
         }
 
-        /* 4. 收藏夹网格布局 */
-        .favorites-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 20px;
-            max-width: 1200px;
+        /* 百度搜索框容器样式 */
+        .baidu-search {
+            width: 600px;
+            /* 搜索框宽度，和百度首页一致 */
+            margin: 0 auto 40px;
+            /* 水平居中，与下方收藏栏间距 */
+            position: relative;
+            /* 为子元素绝对定位做铺垫 */
+        }
+
+        /* 百度搜索输入框样式 */
+        .baidu-search input {
+            width: 100%;
+            /* 占满容器宽度 */
+            height: 44px;
+            /* 搜索框高度 */
+            padding: 0 80px 0 15px;
+            /* 内边距：右方预留按钮空间，左方留空白 */
+            border: 1px solid #ced4da;
+            /* 边框样式 */
+            border-radius: 22px;
+            /* 圆角，和百度搜索框一致 */
+            font-size: 16px;
+            /* 输入文字大小 */
+            outline: none;
+            /* 清除聚焦时的默认外边框 */
+            transition: border-color 0.3s;
+            /* 边框颜色过渡效果，提升交互感 */
+        }
+
+        /* 输入框聚焦时的样式 */
+        .baidu-search input:focus {
+            border-color: #409eff;
+            /* 聚焦时边框变蓝色 */
+            box-shadow: 0 0 5px rgba(64, 158, 255, 0.3);
+            /* 轻微阴影，突出聚焦状态 */
+        }
+
+        /* 百度搜索按钮样式 */
+        .baidu-search button {
+            position: absolute;
+            /* 绝对定位，靠右 */
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            /* 垂直居中 */
+            height: 34px;
+            width: 70px;
+            background-color: #409eff;
+            /* 百度蓝配色 */
+            color: white;
+            /* 文字白色 */
+            border: none;
+            /* 清除边框 */
+            border-radius: 17px;
+            /* 圆角 */
+            cursor: pointer;
+            /* 鼠标悬浮显示手型 */
+            font-size: 14px;
+            /* 按钮文字大小 */
+            transition: background-color 0.3s;
+            /* 背景色过渡效果 */
+        }
+
+        /* 按钮悬浮时的样式 */
+        .baidu-search button:hover {
+            background-color: #337ecc;
+            /* 加深蓝色，提升交互反馈 */
+        }
+
+        /* 搜索框右侧小图标容器（语音、拍照等，和百度一致） */
+        .search-icons {
+            position: absolute;
+            right: 80px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            /* 横向排列图标 */
+            gap: 10px;
+            /* 图标间距 */
+            align-items: center;
+            /* 垂直居中 */
+        }
+
+        /* 小图标样式 */
+        .search-icons img {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            /* 鼠标悬浮显示手型 */
+        }
+
+        /* 收藏网站容器样式 */
+        .favorite-sites {
+            width: 80%;
+            /* 宽度占页面80% */
             margin: 0 auto;
+            /* 水平居中 */
+            display: grid;
+            /* 网格布局，方便排列LOGO */
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            /* 自动适配列数，最小列宽80px */
+            gap: 20px;
+            /* LOGO之间的间距 */
+            justify-items: center;
+            /* 每个LOGO单元格居中 */
         }
-        .favorite-item {
+
+        /* 单个收藏网站项样式 */
+        .site-item {
             text-align: center;
-            cursor: move; /* 拖拽时显示可移动光标 */
-        }
-        .site-logo {
-            width: 64px;
-            height: 64px;
-            border-radius: 10px;
-            margin-bottom: 5px;
-        }
-        .favorite-item a {
+            /* 文字居中 */
             text-decoration: none;
+            /* 清除链接下划线 */
             color: #333;
-            display: block;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 10px;
-            transition: all 0.3s;
+            /* 文字颜色 */
         }
-        .favorite-item a:hover {
-            background: rgba(255, 255, 255, 1);
-            transform: translateY(-3px);
+
+        /* LOGO图片样式 - 保持原图尺寸 */
+        .site-item img {
+            display: block;
+            /* 清除图片默认间隙 */
+            margin: 0 auto 5px;
+            /* 图片居中，与文字间距5px */
+            /* 关键：不设置宽高，保持原图尺寸 */
+        }
+
+        /* 网站名称文字样式 */
+        .site-item span {
+            font-size: 12px;
+            /* 文字大小 */
+            white-space: nowrap;
+            /* 文字不换行 */
+            overflow: hidden;
+            /* 超出隐藏 */
+            text-overflow: ellipsis;
+            /* 超出显示省略号 */
+            display: inline-block;
+            /* 适配省略号样式 */
+            max-width: 80px;
+            /* 最大宽度，避免文字过长 */
         }
     </style>
 </head>
 <body>
+    <!-- 时间日期显示区域 -->
+    <div class="time-date" id="timeDate"></div>
 
-    <!-- 1. 时钟显示区域 -->
-    <div id="clock">正在加载时间...</div>
-
-    <!-- 2. 百度搜索栏 -->
-    <div class="search-container">
-        <form id="searchForm">
-            <input type="text" id="searchInput" placeholder="请输入搜索内容...">
-            <button type="submit">百度一下</button>
-        </form>
-        <div id="searchHistory"></div>
+    <!-- 百度搜索框区域 -->
+    <div class="baidu-search">
+        <input type="text" id="searchInput" placeholder="请输入搜索内容">
+        <!-- 搜索框右侧小图标（语音、拍照、截图，用百度官方图标） -->
+        <div class="search-icons">
+            <img src="https://www.baidu.com/img/voiceicon.png" alt="语音搜索">
+            <img src="https://www.baidu.com/img/camera_new_5606e8f.png" alt="拍照搜索">
+            <img src="https://www.baidu.com/img/screenshot_icon.png" alt="截图搜索">
+        </div>
+        <button onclick="baiduSearch()">百度一下</button>
     </div>
 
-    <!-- 3. 收藏网站展示区域 -->
-    <div id="favoriteContainer" class="favorites-grid">
-        <!-- 收藏项将通过JavaScript动态加载 -->
+    <!-- 收藏的常用网站区域 -->
+    <div class="favorite-sites">
+        <!-- 示例1：替换成你的LOGO路径和网站链接、名称 -->
+        <a href="https://www.baidu.com" class="site-item" target="_blank">
+            <img src="你的LOGO图片路径1" alt="百度">
+            <span>百度</span>
+        </a>
+        <!-- 示例2：可无限添加，调整顺序只需修改HTML中item的位置 -->
+        <a href="https://www.github.com" class="site-item" target="_blank">
+            <img src="你的LOGO图片路径2" alt="GitHub">
+            <span>GitHub</span>
+        </a>
+        <!-- 更多收藏项：复制上面的a标签，修改href、src、alt、span内容即可 -->
     </div>
 
     <script>
-        // ========== 第一部分：实时时钟功能 ==========
-        function updateClock() {
-            const now = new Date(); // 创建一个Date对象，获取当前时间戳
-            const year = now.getFullYear(); // 获取四位数的年份
-            const month = String(now.getMonth() + 1).padStart(2, '0'); // 获取月份(0-11)，所以+1，并补0
-            const day = String(now.getDate()).padStart(2, '0'); // 获取日期，并补0
-            const hours = String(now.getHours()).padStart(2, '0'); // 获取小时，并补0
-            const minutes = String(now.getMinutes()).padStart(2, '0'); // 获取分钟，并补0
-            const seconds = String(now.getSeconds()).padStart(2, '0'); // 获取秒数，并补0
-            const week = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'][now.getDay()]; // 根据getDay()返回的0-6获取星期
-
-            // 将格式化后的时间字符串写入到id为'clock'的div中
-            document.getElementById('clock').innerHTML = `${year}-${month}-${day} ${week} ${hours}:${minutes}:${seconds}`;
+        // 1. 实时更新日期和时间
+        function updateTimeDate() {
+            const now = new Date();
+            // 定义星期数组
+            const weekDays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+            // 格式化日期：年-月-日 星期X
+            const dateStr = now.getFullYear() + "年" + 
+                            (now.getMonth() + 1).toString().padStart(2, "0") + "月" + 
+                            now.getDate().toString().padStart(2, "0") + "日 " + 
+                            weekDays[now.getDay()];
+            // 格式化时间：时:分:秒（补零）
+            const timeStr = now.getHours().toString().padStart(2, "0") + ":" + 
+                            now.getMinutes().toString().padStart(2, "0") + ":" + 
+                            now.getSeconds().toString().padStart(2, "0");
+            // 拼接并显示到页面
+            document.getElementById("timeDate").innerText = dateStr + " " + timeStr;
         }
-        setInterval(updateClock, 1000); // 每隔1000毫秒（1秒）执行一次updateClock函数
-        updateClock(); // 页面加载时立即执行一次，避免初始1秒的空白
 
-        // ========== 第二部分：搜索栏与历史记录 ==========
-        const searchForm = document.getElementById('searchForm');
-        const searchInput = document.getElementById('searchInput');
-        const searchHistoryEl = document.getElementById('searchHistory');
+        // 页面加载时执行一次，然后每秒更新一次
+        updateTimeDate();
+        setInterval(updateTimeDate, 1000);
 
-        // 表单提交事件（点击按钮或按回车）
-        searchForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // 阻止表单默认提交行为（页面跳转）
-            const keyword = searchInput.value.trim(); // 获取输入框的值并去除首尾空格
-            if (keyword) {
-                window.open(`https://www.baidu.com/s?wd=${encodeURIComponent(keyword)}`, '_blank'); // 在新窗口打开百度搜索
-                saveSearchRecord(keyword); // 调用函数保存记录
-                searchInput.value = ''; // 清空输入框
+        // 2. 百度搜索功能
+        function baiduSearch() {
+            const searchText = document.getElementById("searchInput").value.trim();
+            // 如果输入了内容，跳转到百度搜索结果页
+            if (searchText) {
+                const searchUrl = "https://www.baidu.com/s?wd=" + encodeURIComponent(searchText);
+                window.open(searchUrl, "_blank");
+            } else {
+                // 未输入内容时提示
+                alert("请输入搜索内容！");
+            }
+        }
+
+        // 按下回车键触发搜索
+        document.getElementById("searchInput").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                baiduSearch();
             }
         });
-
-        // 保存单条搜索记录到 localStorage
-        function saveSearchRecord(keyword) {
-            let records = JSON.parse(localStorage.getItem('searchHistory')) || []; // 从localStorage读取记录，如果没有则默认为空数组
-            records = records.filter(item => item !== keyword); // 过滤掉重复的关键词
-            records.unshift(keyword); // 将新关键词添加到数组的开头（最新记录在最前面）
-            if (records.length > 10) records.pop(); // 如果记录超过10条，删除最后一条（最旧的）
-            localStorage.setItem('searchHistory', JSON.stringify(records)); // 将数组转为JSON字符串并保存回localStorage
-            renderSearchHistory(); // 重新渲染历史记录显示区域
-        }
-
-        // 渲染显示所有历史记录
-        function renderSearchHistory() {
-            const records = JSON.parse(localStorage.getItem('searchHistory')) || [];
-            searchHistoryEl.innerHTML = records.map(item => `
-                <span class="history-item">
-                    ${item}
-                    <button class="delete-btn" data-keyword="${item}">×</button>
-                </span>
-            `).join(''); // 将数组中的每个记录生成HTML片段，并用空字符串连接起来
-
-            // 为每个删除按钮绑定点击事件
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const keywordToDelete = this.getAttribute('data-keyword');
-                    deleteSearchRecord(keywordToDelete);
-                });
-            });
-        }
-
-        // 删除单条历史记录
-        function deleteSearchRecord(keyword) {
-            let records = JSON.parse(localStorage.getItem('searchHistory')) || [];
-            records = records.filter(item => item !== keyword); // 过滤掉要删除的关键词
-            localStorage.setItem('searchHistory', JSON.stringify(records)); // 保存修改后的数组
-            renderSearchHistory(); // 重新渲染
-        }
-
-        // 页面加载时，渲染一次历史记录
-        renderSearchHistory();
-
-        // ========== 第三部分：收藏夹与拖拽排序 ==========
-        let favorites = JSON.parse(localStorage.getItem('myFavorites')) || [
-            // 默认数据，您可以在上传后修改这里的链接和LOGO路径
-            { name: '全国建筑市场监督公共服务平台', url: 'https://jzsc.mohurd.gov.cn/home', logo: './logos/zhihu.png' },
-            { name: '国家中小学智慧教育平台', url: 'https://basic.smartedu.cn/', logo: '.logos/gjzxxzhjypt.png' },
-            { name: 'CSDN', url: 'https://blog.csdn.net', logo: './logos/csdn.png' }
-        ];
-
-        // 渲染收藏夹到页面上
-        function renderFavorites() {
-            const container = document.getElementById('favoriteContainer');
-            container.innerHTML = favorites.map((item, index) => `
-                <div class="favorite-item" data-id="${index}">
-                    <a href="${item.url}" target="_blank">
-                        <img src="${item.logo}" alt="${item.name}" class="site-logo">
-                        <span>${item.name}</span>
-                    </a>
-                </div>
-            `).join('');
-
-            // 初始化拖拽排序功能
-            new Sortable(container, {
-                animation: 150, // 拖拽时的动画过渡时间（毫秒）
-                onEnd: function(evt) {
-                    // 拖拽结束后的回调函数
-                    const item = favorites.splice(evt.oldIndex, 1); // 从原位置删除被拖拽的元素
-                    favorites.splice(evt.newIndex, 0, item); // 在新位置插入被拖拽的元素
-                    localStorage.setItem('myFavorites', JSON.stringify(favorites)); // 将新的排序保存到localStorage
-                }
-            });
-        }
-
-        // 页面加载时，渲染收藏夹
-        renderFavorites();
     </script>
 </body>
 </html>
-
